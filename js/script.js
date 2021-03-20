@@ -1,23 +1,49 @@
-var rootEl = $('#root');
-var titleEl = $('<h1>');
-var saveButton = $('.save-button')
-var rightNow = moment();
+$(document).ready(function(){ 
+$('#currentDay').html(moment().format('dddd, MMMM Do YYYY'));
 
+console.log(moment());
 
-titleEl.text('Work Day Scheduler');
-titleEl.attr('class', 'header');
-titleEl.addClass('p-5');
-rootEl.append(titleEl);
-rootEl.append('<h2>Hourly plan:</h2>');
+var time = moment();
+var hour = moment().hours();
 
-// var today = moment();
-// var weekDay = today.format("[Today is] dddd")
-// $('#').text(weekDay);
+function plannerActions() {
+    $('.time-block').each(function () {
+        var id = $(this).parent().attr('id');
+        var userInput = localStorage.getItem(id);
+        
+        if (userInput !== null) {
+        $(this).siblings('.description').val(userInput);
+       
+        }
+    });
+}
 
-// TODO: 5. What is the current Unix timestamp?
-var unix = moment().format("X");
-$("titleEl").text(unix);
+plannerActions();
+var saveBtn = $('.saveBtn');
+saveBtn.on('click', function() {
+var id = $(this).parent().attr('id');
+var userInput = $(this).siblings('.description').val();
+localStorage.setItem(id, userInput);
+});
 
-// TODO: 6. Parse the following Unix timestamp, 1318781876, and convert into any time/date format.
-var unixFormat = moment.unix(1318781876).format("MMM Do, YYYY, hh:mm:ss");
-$("TitleEl").text(unixFormat);
+function timeColor() {
+    hour = time.hour();
+    $('.time-block').each(function () {
+        var targetHour = parseInt($(this).attr('id'));
+
+        if (targetHour < hour) {
+            $(this).addClass('past')
+        }
+            else if (targetHour === hour) {
+                $(this).addClass('present')
+            }
+            else if (targetHour > hour) {
+                $(this).addClass('future')
+            }
+    });
+}
+
+timeColor();
+})
+
+// get single target value $('#06 .description').val(localStorage.getItem('06'));
