@@ -1,49 +1,53 @@
-$(document).ready(function(){ 
-$('#currentDay').html(moment().format('dddd, MMMM Do YYYY'));
+// moment function to display current date and time iterations
+$(document).ready(function () {
+    $('#currentDay').html(moment().format('dddd, MMMM Do YYYY'));
 
-console.log(moment());
+    console.log(moment());
 
-var time = moment();
-var hour = moment().hours();
+    var time = moment();
+    var hour = moment().hours();
 
-function plannerActions() {
-    $('.time-block').each(function () {
+    // storage and user value recall function
+    function plannerActions() {
+        $('.time-block').each(function () {
+            var id = $(this).attr('id');
+            var userInput = localStorage.getItem(id);
+
+            if (userInput != null) {
+                $(this).find('.description').val(userInput);
+
+            }  
+        });
+    }
+
+
+    plannerActions();
+    var saveBtn = $('.saveBtn');
+    saveBtn.on('click', function () {
         var id = $(this).parent().attr('id');
-        var userInput = localStorage.getItem(id);
-        
-        if (userInput !== null) {
-        $(this).siblings('.description').val(userInput);
-       
-        }
+        var userInput = $(this).siblings('.description').val();
+        localStorage.setItem(id, userInput);
     });
-}
 
-plannerActions();
-var saveBtn = $('.saveBtn');
-saveBtn.on('click', function() {
-var id = $(this).parent().attr('id');
-var userInput = $(this).siblings('.description').val();
-localStorage.setItem(id, userInput);
-});
+    // class change function
+    function timeColor() {
+        hour = time.hour();
+        $('.time-block').each(function () {
+            var targetHour = parseInt($(this).attr('id'));
 
-function timeColor() {
-    hour = time.hour();
-    $('.time-block').each(function () {
-        var targetHour = parseInt($(this).attr('id'));
-
-        if (targetHour < hour) {
-            $(this).addClass('past')
-        }
+            if (targetHour < hour) {
+                $(this).addClass('past')
+            }
             else if (targetHour === hour) {
                 $(this).addClass('present')
             }
             else if (targetHour > hour) {
                 $(this).addClass('future')
             }
-    });
-}
+        });
+    }
 
-timeColor();
+    timeColor();
 })
 
-// get single target value $('#06 .description').val(localStorage.getItem('06'));
+// get single target value (not ideal) $('#06 .description').val(localStorage.getItem('06'));
